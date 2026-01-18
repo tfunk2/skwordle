@@ -262,4 +262,22 @@ export default defineComponent({
 .yellow {
   background-color: rgb(255, 174, 0);
 }
+
+@media screen and (max-width: 480px) {
+  .guess-container {
+    height: 300px;
+    padding: 8px;
+    padding-bottom: 10px;
+  }
+
+  .letter {
+    font-size: 2.5em;
+    margin: 2px;
+    line-height: 0.5;
+  }
+
+  .word-guess {
+    padding: 1px 2px;
+  }
+}
 </style>
