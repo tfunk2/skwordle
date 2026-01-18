@@ -21,6 +21,9 @@ export default {
   color: white;
   width: 100%;
   text-align: center;
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 .header-title {

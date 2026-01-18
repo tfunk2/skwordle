@@ -114,6 +114,10 @@ export default defineComponent({
   width: 100vw;
   background-color: rgba(50, 50, 50, 0.7);
   padding: 1rem;
+  padding-top: calc(1rem + env(safe-area-inset-top));
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  padding-left: calc(1rem + env(safe-area-inset-left));
+  padding-right: calc(1rem + env(safe-area-inset-right));
   box-sizing: border-box;
 }
 
