@@ -459,6 +459,8 @@ html {
 #pending-guess {
   outline: none;
   background-color: transparent;
+  margin-left: 6px;
+  margin-top: 6px;
 }
 
 #pending-guess:focus {
