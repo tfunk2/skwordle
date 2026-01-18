@@ -117,6 +117,8 @@ export default defineComponent({
   margin: 0;
   padding-left: 4px;
   font-size: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .bar-label {
@@ -136,6 +138,7 @@ export default defineComponent({
   line-height: 0.9;
   padding-left: 6px;
   padding-right: 6px;
+  padding-bottom: 3px;
   box-shadow: 0 0 0 2px rgb(62, 172, 62) inset;
   border-radius: 6px 0px 0px 6px;
   display: flex;

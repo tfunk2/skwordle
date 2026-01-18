@@ -119,7 +119,7 @@ export default defineComponent({
   /* font-family: 'Advent Pro', sans-serif; */
   /* font-family: 'Bungee Hairline', sans-serif; */
   font-family: "Monofett", sans-serif;
-  font-size: 8vw;
+  font-size: clamp(50px, 8vw, 60px);
   /* font-size: clamp(2em, 3.5em, 5em); */
   color: rgb(155, 155, 155);
   line-height: 0.8;
@@ -188,7 +188,7 @@ export default defineComponent({
   }
 }
 
-@media screen and (width <= 425px) {
+@media screen and (max-width: 480px) {
   .grey {
     font-size: 50px;
   }

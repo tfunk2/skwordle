@@ -127,7 +127,7 @@ export default defineComponent({
   max-width: 500px;
   min-height: 400px;
   max-height: 90vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #16213e 75%, #1a1a2e 100%);
+  background: #0a0a0a;
   cursor: default;
   padding: 1.5rem 1rem;
   box-sizing: border-box;
@@ -139,7 +139,7 @@ export default defineComponent({
   padding-top: 0.5rem;
   margin: 0 0 1rem 0;
   font-family: 'Bungee Hairline', sans-serif;
-  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  font-size: clamp(1.4rem, 5vw, 2rem);
   text-align: center;
   width: 100%;
 }
@@ -169,7 +169,7 @@ export default defineComponent({
 .streak-text {
   font-family: 'Bungee Hairline', sans-serif;
   color: white;
-  font-size: clamp(1rem, 3vw, 1.4rem);
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
   margin: 0;
   text-align: center;
 }
@@ -177,7 +177,7 @@ export default defineComponent({
 .streak-number {
   font-family: "Monofett", sans-serif;
   color: rgb(62, 172, 62);
-  font-size: clamp(1.5rem, 5vw, 2em);
+  font-size: clamp(1.8rem, 6vw, 2em);
 }
 
 #winning-word {
