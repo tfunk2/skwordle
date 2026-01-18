@@ -37,16 +37,18 @@
         :shake-word-guess="shakeWordGuess"
       />
     </div>
-    <EndGameModal
-      v-if="isGuessingComplete"
-      :currentGuess="currentGuess"
-      :winStreak="winStreak"
-      :currentWinningWord="currentWinningWord"
-      :isCurrentGuessCorrect="isCurrentGuessCorrect"
-      :guesses-per-win="guessesPerWin"
-      :total-wins="totalWins"
-      @next-word="changeWordClearBoard()"
-    />
+    <transition name="modal">
+      <EndGameModal
+        v-if="isGuessingComplete"
+        :currentGuess="currentGuess"
+        :winStreak="winStreak"
+        :currentWinningWord="currentWinningWord"
+        :isCurrentGuessCorrect="isCurrentGuessCorrect"
+        :guesses-per-win="guessesPerWin"
+        :total-wins="totalWins"
+        @next-word="changeWordClearBoard()"
+      />
+    </transition>
     <Keyboard 
       :guessed-letters="guessedLetters" 
       @type-letter="typeLetter($event)"
@@ -412,5 +414,23 @@ export default defineComponent({
   justify-content: center;
   max-width: 100%;
   z-index: 1;
+}
+
+/* Modal transition animations */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-enter-to,
+.modal-leave-from {
+  opacity: 1;
+  transform: scale(1);
 }
 </style>
