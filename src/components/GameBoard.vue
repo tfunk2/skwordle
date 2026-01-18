@@ -146,13 +146,46 @@ export default defineComponent({
       if (word === "") {
         return "";
       }
-      return guessedLetters.map((letter, index) => {
-        return letter === winningLetters[index]
-          ? "green"
-          : winningLetters.includes(letter)
-          ? "yellow"
-          : "black";
-      })[letterIndex];
+      
+      // First pass: mark exact matches (green)
+      const result: string[] = new Array(5).fill("");
+      const usedWinningIndices: Set<number> = new Set();
+      const usedGuessIndices: Set<number> = new Set();
+      
+      // Mark all exact matches as green
+      for (let i = 0; i < 5; i++) {
+        if (guessedLetters[i] === winningLetters[i]) {
+          result[i] = "green";
+          usedWinningIndices.add(i);
+          usedGuessIndices.add(i);
+        }
+      }
+      
+      // Second pass: mark yellow for letters in wrong position
+      // Only if there's an unused instance in the winning word
+      for (let i = 0; i < 5; i++) {
+        if (result[i] === "green") {
+          continue; // Already marked as green
+        }
+        
+        const letter = guessedLetters[i];
+        // Find an unused instance of this letter in the winning word
+        let foundUnused = false;
+        for (let j = 0; j < 5; j++) {
+          if (!usedWinningIndices.has(j) && winningLetters[j] === letter) {
+            result[i] = "yellow";
+            usedWinningIndices.add(j);
+            foundUnused = true;
+            break;
+          }
+        }
+        
+        if (!foundUnused) {
+          result[i] = "black";
+        }
+      }
+      
+      return result[letterIndex];
     },
     lettersOfGuess(word: string): string[] {
       return word.split("");
