@@ -95,7 +95,7 @@ export default defineComponent({
 .bar-container {
   display: flex;
   width: 100%;
-  align-items: center;
+  align-items: stretch;
   margin-top: 4px;
   height: 10%;
 }
@@ -106,7 +106,7 @@ export default defineComponent({
 
 .win-side-green {
   background-color: rgb(62, 172, 62);
-  height: 100%;
+  align-self: stretch;
   border-radius: 0px 6px 6px 0px;
   padding-left: 4px;
 }
@@ -138,7 +138,8 @@ export default defineComponent({
   padding-right: 6px;
   box-shadow: 0 0 0 2px rgb(62, 172, 62) inset;
   border-radius: 6px 0px 0px 6px;
-  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 container {

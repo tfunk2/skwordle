@@ -11,11 +11,10 @@
         <p class="streak-text">Streak increased: <span class="streak-number">{{ winStreak }}</span></p>
         <p class="win-text">
           <span id="winning-word">{{ currentWinningWord.toUpperCase() }}</span>
-           was the word
+          was the word
         </p>
       </div>
       <div v-else class="bottom-content">
-        <!-- <p class="win-text">Streak dropped to <span class="streak-number">0</span></p> -->
         <p class="win-text">
           <span id="losing-word">{{ currentWinningWord.toUpperCase() }}</span>
           was the word
@@ -113,16 +112,9 @@ export default defineComponent({
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background-color: rgba(50, 50, 50, 0.7)
-}
-
-.bottom-content{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  height: 30%;
-  width: 100%;
+  background-color: rgba(50, 50, 50, 0.7);
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 .end-game-modal {
@@ -130,85 +122,154 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  border-radius: 6px;
-  height: 50%;
-  width: 50%;
-  background-color: gray;
-  background-image: linear-gradient(to bottom right, black, rgb(30, 30, 30), black);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  min-height: 400px;
+  max-height: 90vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #16213e 75%, #1a1a2e 100%);
   cursor: default;
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .end-game-reaction {
   color: white;
-  padding-top: 6px;
-  height: fit-content;
-  margin: 0;
+  padding-top: 0.5rem;
+  margin: 0 0 1rem 0;
   font-family: 'Bungee Hairline', sans-serif;
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  text-align: center;
+  width: 100%;
+}
+
+.bottom-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.5rem 0;
 }
 
 .win-text {
   font-family: 'Bungee Hairline', sans-serif;
   color: white;
-  font-size: 1.4em;
+  font-size: clamp(1rem, 3vw, 1.4rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 0;
+  text-align: center;
+  line-height: 1.4;
 }
 
 .streak-text {
   font-family: 'Bungee Hairline', sans-serif;
   color: white;
-  font-size: 1.4em;
+  font-size: clamp(1rem, 3vw, 1.4rem);
   margin: 0;
+  text-align: center;
 }
 
 .streak-number {
   font-family: "Monofett", sans-serif;
   color: rgb(62, 172, 62);
-  font-size: 2em;
+  font-size: clamp(1.5rem, 5vw, 2em);
 }
 
 #winning-word {
   font-family: "Monofett", sans-serif;
   color: rgb(62, 172, 62);
-  font-size: 2em;
+  font-size: clamp(2rem, 6vw, 2.8em);
   letter-spacing: 2px;
-  line-height: 0.8;
-  padding-bottom: 6px;
+  line-height: 1.2;
+  padding-bottom: 0.5rem;
+  word-break: break-word;
 }
 
 #losing-word {
   font-family: "Monofett", sans-serif;
   color: rgb(214, 40, 40);
-  font-size: 2em;
+  font-size: clamp(1.5rem, 5vw, 2em);
   letter-spacing: 2px;
-  line-height: 0.8;
-  padding-bottom: 6px;
+  line-height: 1.2;
+  padding-bottom: 0.5rem;
+  word-break: break-word;
 }
 
 .next-word-button {
   font-family: "Monofett", sans-serif;
   color: white;
-  font-size: 2em;
+  font-size: clamp(2.2rem, 6vw, 3em);
   cursor: pointer;
-  margin-top: 0;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: color 0.2s ease;
+  text-align: center;
 }
 
 .next-word-button:hover {
   color: rgb(200, 200, 200);
 }
 
-@media screen and (width >= 900px) {
-  .grey {
-    font-size: 80px;
+.next-word-button:active {
+  transform: scale(0.98);
+}
+
+/* Tablet and larger screens */
+@media screen and (min-width: 768px) {
+  .end-game-modal {
+    padding: 2rem 1.5rem;
+    min-height: 500px;
+  }
+
+  .end-game-reaction {
+    margin-bottom: 1.5rem;
+  }
+
+  .bottom-content {
+    gap: 1.5rem;
+    padding: 1rem 0;
   }
 }
 
-@media screen and (width <= 425px) {
+/* Mobile-specific adjustments */
+@media screen and (max-width: 480px) {
+  .modal-container {
+    padding: 0.5rem;
+  }
+
   .end-game-modal {
-    height: 70%;
-    width: calc(100% - 32px);
+    padding: 1rem 0.75rem;
+    min-height: auto;
+    max-height: 95vh;
+  }
+
+  .end-game-reaction {
+    padding-top: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .bottom-content {
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+  }
+
+  #winning-word {
+    font-size: clamp(2.5rem, 8vw, 3.5em);
+  }
+
+  #losing-word {
+    font-size: clamp(2.5rem, 8vw, 3.5em);
+  }
+
+  .next-word-button {
+    margin-top: 0.25rem;
+    padding: 0.4rem 0.8rem;
+    font-size: clamp(2.2rem, 8vw, 3.2em);
   }
 }
 </style>
