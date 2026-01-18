@@ -17,6 +17,11 @@
             maxlength="5"
             minlength="1"
             autofocus
+            readonly
+            inputmode="none"
+            @focus="handleInputFocus"
+            @blur="handleInputBlur"
+            @click.prevent="handleInputClick"
           />
           <input
             v-show="!isGuessingComplete"
@@ -97,17 +102,42 @@ export default defineComponent({
 
     const currentWinningWord: Ref<string> = ref('');
 
+    const handleInputFocus = (event: Event) => {
+      // Prevent keyboard from showing on mobile
+      const target = event.target as HTMLInputElement;
+      if (target) {
+        target.setAttribute('readonly', 'readonly');
+      }
+    }
+
+    const handleInputBlur = (event: Event) => {
+      // Immediately refocus to keep input always focused
+      const target = event.target as HTMLInputElement;
+      if (target && !isGuessingComplete.value) {
+        setTimeout(() => {
+          target.focus();
+        }, 0);
+      }
+    }
+
+    const handleInputClick = (event: Event) => {
+      // Prevent default behavior and ensure focus
+      event.preventDefault();
+      const target = event.target as HTMLInputElement;
+      if (target) {
+        target.focus();
+      }
+    }
+
     const setInputFocus = () => {
-      const inputField = document.getElementById("pending-guess");
+      const inputField = document.getElementById("pending-guess") as HTMLInputElement;
 
       if (inputField) {
         // Set initial focus (can also be done with autofocus attribute)
         inputField.focus();
         
-        // Re-focus the input field whenever it loses focus
-        inputField.addEventListener("blur", function() {
-          inputField.focus();
-        });
+        // Ensure readonly is set to prevent keyboard
+        inputField.setAttribute('readonly', 'readonly');
       }
     }
 
@@ -294,25 +324,61 @@ export default defineComponent({
       updateCache('pendingGuess', pendingGuess.value)
     })
 
-    onMounted(() => {
-      document.addEventListener("DOMContentLoaded", () => {
-        const inputField = document.getElementById("pending-guess");
-        const body = document.getElementsByTagName('body')
-
-        if (inputField) {
-          // Set initial focus (can also be done with autofocus attribute)
+    watch(isGuessingComplete, (newValue) => {
+      // When game completes, stop auto-focusing. When new game starts, resume focus
+      const inputField = document.getElementById("pending-guess") as HTMLInputElement;
+      if (inputField && !newValue) {
+        setTimeout(() => {
           inputField.focus();
-          
-          // Re-focus the input field whenever it loses focus
-          inputField.addEventListener("blur", function() {
-            inputField.focus();
-          });
-          
-          body[0].addEventListener("click", function() {
-            inputField.focus();
-          });
-        }
-      });
+        }, 100);
+      }
+    })
+
+    onMounted(() => {
+      const inputField = document.getElementById("pending-guess") as HTMLInputElement;
+      const body = document.getElementsByTagName('body')[0];
+
+      if (inputField) {
+        // Set readonly to prevent keyboard
+        inputField.setAttribute('readonly', 'readonly');
+        inputField.setAttribute('inputmode', 'none');
+        
+        // Set initial focus
+        setTimeout(() => {
+          inputField.focus();
+        }, 100);
+        
+        // Re-focus the input field whenever it loses focus
+        inputField.addEventListener("blur", function() {
+          if (!isGuessingComplete.value) {
+            setTimeout(() => {
+              inputField.focus();
+            }, 0);
+          }
+        });
+        
+        // Keep input focused on any click
+        body.addEventListener("click", function(e) {
+          // Don't refocus if clicking on keyboard buttons
+          const target = e.target as HTMLElement;
+          if (!target.closest('.keyboard') && !target.closest('.enter-button') && !target.closest('.backspace-button')) {
+            setTimeout(() => {
+              inputField.focus();
+            }, 0);
+          }
+        });
+
+        // Prevent keyboard on touch devices
+        inputField.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          inputField.focus();
+        });
+
+        inputField.addEventListener('touchend', function(e) {
+          e.preventDefault();
+          inputField.focus();
+        });
+      }
       // Retrieving data
       const currentSession: any = localStorage.getItem('currentSession');
       const parsedSession = JSON.parse(currentSession);
@@ -371,6 +437,9 @@ export default defineComponent({
       winStreak,
       currentWinningWord,
       setInputFocus,
+      handleInputFocus,
+      handleInputBlur,
+      handleInputClick,
     };
   },
 });
@@ -390,6 +459,26 @@ html {
 #pending-guess {
   outline: none;
   background-color: transparent;
+}
+
+#pending-guess:focus {
+  outline: none;
+}
+
+@media screen and (max-width: 480px) {
+  #pending-guess {
+    caret-color: transparent;
+    color: transparent;
+    text-shadow: 0 0 0 transparent;
+  }
+
+  #pending-guess::selection {
+    background: transparent;
+  }
+
+  #pending-guess::-moz-selection {
+    background: transparent;
+  }
 }
 
 .guess-form {
