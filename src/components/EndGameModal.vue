@@ -181,6 +181,7 @@ export default defineComponent({
   margin: 0;
   text-align: center;
   line-height: 1.4;
+  font-weight: bold;
 }
 
 .streak-text {
@@ -189,6 +190,7 @@ export default defineComponent({
   font-size: clamp(1.2rem, 4vw, 1.8rem);
   margin: 0;
   text-align: center;
+  font-weight: bold;
 }
 
 .streak-number {

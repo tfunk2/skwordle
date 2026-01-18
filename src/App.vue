@@ -17,11 +17,11 @@
             maxlength="5"
             minlength="1"
             autofocus
-            readonly
-            inputmode="none"
+            :readonly="isMobileDevice"
+            :inputmode="isMobileDevice ? 'none' : undefined"
             @focus="handleInputFocus"
             @blur="handleInputBlur"
-            @click.prevent="handleInputClick"
+            @click="handleInputClick"
           />
           <input
             v-show="!isGuessingComplete"
@@ -102,18 +102,27 @@ export default defineComponent({
 
     const currentWinningWord: Ref<string> = ref('');
 
+    // Detect if device is mobile
+    const isMobileDevice: Ref<boolean> = ref(false);
+    
+    const detectMobileDevice = (): boolean => {
+      if (typeof window === 'undefined') return false;
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+             (window.matchMedia && window.matchMedia('(max-width: 768px)').matches && 'ontouchstart' in window);
+    }
+
     const handleInputFocus = (event: Event) => {
-      // Prevent keyboard from showing on mobile
+      // Prevent keyboard from showing on mobile only
       const target = event.target as HTMLInputElement;
-      if (target) {
+      if (target && isMobileDevice.value) {
         target.setAttribute('readonly', 'readonly');
       }
     }
 
     const handleInputBlur = (event: Event) => {
-      // Immediately refocus to keep input always focused
+      // Immediately refocus to keep input always focused (mobile only)
       const target = event.target as HTMLInputElement;
-      if (target && !isGuessingComplete.value) {
+      if (target && !isGuessingComplete.value && isMobileDevice.value) {
         setTimeout(() => {
           target.focus();
         }, 0);
@@ -121,10 +130,12 @@ export default defineComponent({
     }
 
     const handleInputClick = (event: Event) => {
-      // Prevent default behavior and ensure focus
-      event.preventDefault();
+      // Prevent default behavior and ensure focus (mobile only)
+      if (isMobileDevice.value) {
+        event.preventDefault();
+      }
       const target = event.target as HTMLInputElement;
-      if (target) {
+      if (target && isMobileDevice.value) {
         target.focus();
       }
     }
@@ -136,8 +147,10 @@ export default defineComponent({
         // Set initial focus (can also be done with autofocus attribute)
         inputField.focus();
         
-        // Ensure readonly is set to prevent keyboard
-        inputField.setAttribute('readonly', 'readonly');
+        // Ensure readonly is set to prevent keyboard (mobile only)
+        if (isMobileDevice.value) {
+          inputField.setAttribute('readonly', 'readonly');
+        }
       }
     }
 
@@ -325,9 +338,9 @@ export default defineComponent({
     })
 
     watch(isGuessingComplete, (newValue) => {
-      // When game completes, stop auto-focusing. When new game starts, resume focus
+      // When game completes, stop auto-focusing. When new game starts, resume focus (mobile only)
       const inputField = document.getElementById("pending-guess") as HTMLInputElement;
-      if (inputField && !newValue) {
+      if (inputField && !newValue && isMobileDevice.value) {
         setTimeout(() => {
           inputField.focus();
         }, 100);
@@ -335,49 +348,56 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      // Detect mobile device
+      isMobileDevice.value = detectMobileDevice();
+      
       const inputField = document.getElementById("pending-guess") as HTMLInputElement;
       const body = document.getElementsByTagName('body')[0];
 
       if (inputField) {
-        // Set readonly to prevent keyboard
-        inputField.setAttribute('readonly', 'readonly');
-        inputField.setAttribute('inputmode', 'none');
+        // Set readonly and inputmode to prevent keyboard (mobile only)
+        if (isMobileDevice.value) {
+          inputField.setAttribute('readonly', 'readonly');
+          inputField.setAttribute('inputmode', 'none');
+        }
         
         // Set initial focus
         setTimeout(() => {
           inputField.focus();
         }, 100);
         
-        // Re-focus the input field whenever it loses focus
-        inputField.addEventListener("blur", function() {
-          if (!isGuessingComplete.value) {
-            setTimeout(() => {
-              inputField.focus();
-            }, 0);
-          }
-        });
-        
-        // Keep input focused on any click
-        body.addEventListener("click", function(e) {
-          // Don't refocus if clicking on keyboard buttons
-          const target = e.target as HTMLElement;
-          if (!target.closest('.keyboard') && !target.closest('.enter-button') && !target.closest('.backspace-button')) {
-            setTimeout(() => {
-              inputField.focus();
-            }, 0);
-          }
-        });
+        // Re-focus the input field whenever it loses focus (mobile only)
+        if (isMobileDevice.value) {
+          inputField.addEventListener("blur", function() {
+            if (!isGuessingComplete.value) {
+              setTimeout(() => {
+                inputField.focus();
+              }, 0);
+            }
+          });
+          
+          // Keep input focused on any click (mobile only)
+          body.addEventListener("click", function(e) {
+            // Don't refocus if clicking on keyboard buttons
+            const target = e.target as HTMLElement;
+            if (!target.closest('.keyboard') && !target.closest('.enter-button') && !target.closest('.backspace-button')) {
+              setTimeout(() => {
+                inputField.focus();
+              }, 0);
+            }
+          });
 
-        // Prevent keyboard on touch devices
-        inputField.addEventListener('touchstart', function(e) {
-          e.preventDefault();
-          inputField.focus();
-        });
+          // Prevent keyboard on touch devices
+          inputField.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            inputField.focus();
+          });
 
-        inputField.addEventListener('touchend', function(e) {
-          e.preventDefault();
-          inputField.focus();
-        });
+          inputField.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            inputField.focus();
+          });
+        }
       }
       // Retrieving data
       const currentSession: any = localStorage.getItem('currentSession');
@@ -440,6 +460,7 @@ export default defineComponent({
       handleInputFocus,
       handleInputBlur,
       handleInputClick,
+      isMobileDevice,
     };
   },
 });
