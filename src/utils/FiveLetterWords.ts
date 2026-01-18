@@ -1629,6 +1629,7 @@ export const fiveLetterPlayableWords = [
     'glass',
     'globe',
     'gleam',
+    'gloom',
     'glory',
     'gloss',
     'glove',

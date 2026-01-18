@@ -260,7 +260,7 @@ export default defineComponent({
   }
 
   .end-game-modal {
-    padding: 1rem 0.75rem;
+    padding: 1rem 1.5rem;
     min-height: auto;
     max-height: 95vh;
   }

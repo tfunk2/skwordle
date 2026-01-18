@@ -237,6 +237,13 @@ export default defineComponent({
     }
 
     const changeWordClearBoard = (): void => {
+      if (!isCurrentGuessCorrect.value) {
+        winStreak.value = 0;
+        updateCache('winStreak', 'clear')
+        totalLosses.value = totalLosses.value + 1
+        updateCache('totalLosses')
+      }
+
       pendingGuess.value = "";
       updateCache('pendingGuess', 'clear')
 
@@ -251,12 +258,6 @@ export default defineComponent({
       guessedLetters.value = [];
       updateCache('guessedLetters', 'clear')
 
-      if (isCurrentGuessCorrect.value) {
-        winStreak.value = 0;
-        updateCache('winStreak', 'clear')
-        totalLosses.value = totalLosses.value + 1
-        updateCache('totalLosses')
-      }
       setInputFocus()
     }
 

@@ -73,7 +73,6 @@ export default defineComponent({
 .stats-chart-container {
   height: 70%;
   display: flex;
-
 }
 
 .chart-container {
@@ -83,8 +82,8 @@ export default defineComponent({
   align-items: center;
   width: 100%;
   height: 100%;
-  padding-left: 30%;
-  padding-right: auto;
+  padding-left: 25%;
+  padding-right: 10%;
 }
 
 .bar-container {
