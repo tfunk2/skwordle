@@ -12,14 +12,14 @@
           class="win-side-green" 
           :style="`width: ${percentages[barIndex]}%;`" 
         />
-        <p class="stat-text-white">{{ fakeStats[barIndex] }}</p>
+        <p class="stat-text-white">{{ statsChartData[barIndex] }}</p>
       </div>
     </div>
   </container>
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 
 export default defineComponent({
   name: "StatsChart",
@@ -35,25 +35,21 @@ export default defineComponent({
     isCurrentGuessCorrect: {
       type: Boolean,
       required: true,
+    },
+    statsChartData: {
+      type: Array as PropType<any[]>,
+      required: true,
     }
   },
   setup(props) {
-    const fakeStats = [
-      5,
-      12,
-      25,
-      42,
-      56,
-      100
-    ]
 
     const percentages = computed(() => {
-      const oneGuessWinPercentage = fakeStats[0] / props.totalWins
-      const twoGuessWinPercentage = fakeStats[1] / props.totalWins
-      const threeGuessWinPercentage = fakeStats[2] / props.totalWins
-      const fourGuessWinPercentage = fakeStats[3] / props.totalWins
-      const fiveGuessWinPercentage = fakeStats[4] / props.totalWins
-      const sixGuessWinPercentage = fakeStats[5] / props.totalWins
+      const oneGuessWinPercentage = props.statsChartData[0] / props.totalWins
+      const twoGuessWinPercentage = props.statsChartData[1] / props.totalWins
+      const threeGuessWinPercentage = props.statsChartData[2] / props.totalWins
+      const fourGuessWinPercentage = props.statsChartData[3] / props.totalWins
+      const fiveGuessWinPercentage = props.statsChartData[4] / props.totalWins
+      const sixGuessWinPercentage = props.statsChartData[5] / props.totalWins
 
       return [
         // Math.round(num * 100) / 100
@@ -67,7 +63,6 @@ export default defineComponent({
     })
 
     return {
-      fakeStats,
       percentages
     };
   },

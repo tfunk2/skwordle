@@ -3,12 +3,13 @@
     <div class="end-game-modal">
       <h2 class="end-game-reaction">{{ endGameReaction }}</h2>
       <StatsChart 
-        :total-wins="240" 
+        :total-wins="totalWins" 
         :highlighted-number="highlightedNumber"
         :is-current-guess-correct="isCurrentGuessCorrect"
+        :stats-chart-data="statsChartData"
       />
       <div v-if="isCurrentGuessCorrect" class="bottom-content">
-        <p class="streak-text">Streak increased: <span class="streak-number">{{ winStreak }}</span></p>
+        <p class="streak-text">Streak: <span class="streak-number">{{ winStreak }}</span></p>
         <p class="win-text">
           <span id="winning-word">{{ currentWinningWord.toUpperCase() }}</span>
           was the word
@@ -26,7 +27,7 @@
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent, PropType } from "vue";
+import { computed, ComputedRef, defineComponent, PropType } from "vue";
 import StatsChart from "./StatsChart.vue"
 
 export default defineComponent({
@@ -94,10 +95,22 @@ export default defineComponent({
       }
     })
 
+    const statsChartData: ComputedRef<Number[]> = computed(() => {
+      const counts1 = props.guessesPerWin.filter((guessCount) => guessCount === 1).length
+      const counts2 = props.guessesPerWin.filter((guessCount) => guessCount === 2).length
+      const counts3 = props.guessesPerWin.filter((guessCount) => guessCount === 3).length
+      const counts4 = props.guessesPerWin.filter((guessCount) => guessCount === 4).length
+      const counts5 = props.guessesPerWin.filter((guessCount) => guessCount === 5).length
+      const counts6 = props.guessesPerWin.filter((guessCount) => guessCount === 6).length
+
+      return [counts1, counts2, counts3, counts4, counts5, counts6]
+    })
+
     return {
       endGameReaction,
       emitNextWord,
-      highlightedNumber
+      highlightedNumber,
+      statsChartData
     }
   }
 });
@@ -180,7 +193,7 @@ export default defineComponent({
 
 .streak-number {
   font-family: "Monofett", sans-serif;
-  color: rgb(62, 172, 62);
+  color: rgb(255, 174, 0);
   font-size: clamp(1.8rem, 6vw, 2em);
 }
 
