@@ -51,7 +51,7 @@ export default defineComponent({
   font-family: "Bungee Hairline", sans-serif;
   margin: 0px;
   line-height: 0.8;
-  padding-bottom: 4px;
+  padding-bottom: 2px;
 }
 
 .streak-number-text {
@@ -68,10 +68,10 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   outline: 1px white solid;
-  padding-top: 12px;
+  padding-top: 8px;
   padding-left: 15px;
   padding-right: 15px;
-  padding-bottom: 10px;
+  padding-bottom: 6px;
 }
 
 .stats-section {
@@ -86,5 +86,27 @@ export default defineComponent({
 
 #longest-streak {
   border-radius: 0px 4px 4px 0px;
+}
+
+@media screen and (max-width: 480px) {
+  .streak-text {
+    padding-bottom: 1px;
+    font-size: 0.9em;
+  }
+
+  .streak-number-text {
+    font-size: 28px;
+    line-height: 0.75;
+  }
+
+  .stats-container {
+    padding-top: 6px;
+    padding-bottom: 4px;
+  }
+
+  .stats-section {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
 }
 </style>

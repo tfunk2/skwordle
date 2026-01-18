@@ -377,6 +377,10 @@ export default defineComponent({
 </script>
 
 <style>
+html {
+  background-color: rgb(62, 172, 62);
+}
+
 #app {
   height: 100vh;
   min-width: 100%;

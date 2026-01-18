@@ -160,7 +160,7 @@ export default defineComponent({
   justify-self: flex-end;
   margin-bottom: 20px;
   justify-self: flex-end;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 .enter-button, .backspace-button {
