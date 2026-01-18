@@ -1,6 +1,6 @@
 {
-  "name": "Sqwordle",
-  "short_name": "Sqwordle",
+  "name": "Skwordle",
+  "short_name": "Skwordle",
   "description": "A word guessing game",
   "start_url": "/",
   "display": "standalone",

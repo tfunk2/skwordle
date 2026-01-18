@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <h1 class="header-title">SQWORDLE</h1>
+    <h1 class="header-title">SKWORDLE</h1>
   </div>
 </template>
 

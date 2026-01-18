@@ -1,4 +1,4 @@
-# sqwordle
+# skwordle
 
 ## Project setup
 ```
