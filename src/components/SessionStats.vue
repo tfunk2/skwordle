@@ -52,6 +52,7 @@ export default defineComponent({
   margin: 0px;
   line-height: 0.8;
   padding-bottom: 2px;
+  font-weight: bold;
 }
 
 .streak-number-text {
