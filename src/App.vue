@@ -213,11 +213,29 @@ export default defineComponent({
       if (pendingGuess.value.length < 5) {
         pendingGuess.value = pendingGuess.value + letter
       }
+      // Refocus input after typing letter (for laptops/desktop)
+      if (!isMobileDevice.value) {
+        setTimeout(() => {
+          const inputField = document.getElementById("pending-guess") as HTMLInputElement;
+          if (inputField && !isGuessingComplete.value) {
+            inputField.focus();
+          }
+        }, 0);
+      }
     }
 
     const backspace = () => {
       if (pendingGuess.value.length) {
         pendingGuess.value = pendingGuess.value.slice(0, -1)
+      }
+      // Refocus input after backspace (for laptops/desktop)
+      if (!isMobileDevice.value) {
+        setTimeout(() => {
+          const inputField = document.getElementById("pending-guess") as HTMLInputElement;
+          if (inputField && !isGuessingComplete.value) {
+            inputField.focus();
+          }
+        }, 0);
       }
     }
 
@@ -251,11 +269,31 @@ export default defineComponent({
 
         pendingGuess.value = "";
         updateCache('usedWords', currentGuess.value)
+        
+        // Refocus input after submitting guess (for laptops/desktop)
+        if (!isMobileDevice.value) {
+          setTimeout(() => {
+            const inputField = document.getElementById("pending-guess") as HTMLInputElement;
+            if (inputField && !isGuessingComplete.value) {
+              inputField.focus();
+            }
+          }, 0);
+        }
       } else {
         shakeWordGuess.value = true;
         setTimeout(() => {
           shakeWordGuess.value = false;
         }, 500)
+        
+        // Refocus input even if guess was invalid (for laptops/desktop)
+        if (!isMobileDevice.value) {
+          setTimeout(() => {
+            const inputField = document.getElementById("pending-guess") as HTMLInputElement;
+            if (inputField && !isGuessingComplete.value) {
+              inputField.focus();
+            }
+          }, 0);
+        }
       }
     }
 
@@ -338,9 +376,9 @@ export default defineComponent({
     })
 
     watch(isGuessingComplete, (newValue) => {
-      // When game completes, stop auto-focusing. When new game starts, resume focus (mobile only)
+      // When game completes, stop auto-focusing. When new game starts, resume focus (both mobile and desktop)
       const inputField = document.getElementById("pending-guess") as HTMLInputElement;
-      if (inputField && !newValue && isMobileDevice.value) {
+      if (inputField && !newValue) {
         setTimeout(() => {
           inputField.focus();
         }, 100);
@@ -396,6 +434,30 @@ export default defineComponent({
           inputField.addEventListener('touchend', function(e) {
             e.preventDefault();
             inputField.focus();
+          });
+        } else {
+          // For laptops/desktop: refocus after blur
+          inputField.addEventListener("blur", function() {
+            if (!isGuessingComplete.value) {
+              setTimeout(() => {
+                inputField.focus();
+              }, 0);
+            }
+          });
+          
+          // For laptops/desktop: refocus after any click (including keyboard buttons)
+          body.addEventListener("click", function(e) {
+            // Don't refocus if clicking on modal
+            const target = e.target as HTMLElement;
+            if (!target.closest('.modal-container') && 
+                !target.closest('.end-game-modal')) {
+              // Refocus after a short delay to allow button click handlers to complete
+              setTimeout(() => {
+                if (!isGuessingComplete.value) {
+                  inputField.focus();
+                }
+              }, 10);
+            }
           });
         }
       }
