@@ -121,7 +121,7 @@ export default defineComponent({
   font-family: "Monofett", sans-serif;
   font-size: clamp(50px, 8vw, 60px);
   /* font-size: clamp(2em, 3.5em, 5em); */
-  color: rgb(155, 155, 155);
+  color: rgb(165, 165, 165);
   line-height: 0.8;
   margin: 2px;
 }
@@ -134,7 +134,7 @@ export default defineComponent({
 
 .black {
   /* background-color: rgb(99, 93, 93); */
-  color: rgb(29, 29, 29);
+  color: rgb(99, 93, 93);
   /* border-radius: 6px; */
 }
 
