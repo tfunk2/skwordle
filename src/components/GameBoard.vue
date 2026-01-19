@@ -265,19 +265,19 @@ export default defineComponent({
 
 @media screen and (max-width: 480px) {
   .guess-container {
-    height: 300px;
-    padding: 8px;
-    padding-bottom: 10px;
+    height: 320px;
+    padding: 9px;
+    padding-bottom: 11px;
   }
 
   .letter {
-    font-size: 2.5em;
-    margin: 2px;
+    font-size: 2.7em;
+    margin: 2.5px;
     line-height: 0.5;
   }
 
   .word-guess {
-    padding: 1px 2px;
+    padding: 1.5px 3px;
   }
 }
 </style>
