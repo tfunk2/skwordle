@@ -1,65 +1,73 @@
 <template>
   <div class="app-container">
-    <Header />
-
-    <SessionStats 
-      :win-streak="winStreak"
-      :longest-streak="longestStreak"
-      :win-loss-percentage="winLossPercentage"
-    />
-    <div>
-      <form @submit.prevent autocomplete="off" class="guess-form">
-        <div class="letter-input-container">
-          <input
-            class="five-letter-input"
-            id="pending-guess"
-            v-model="pendingGuess"
-            maxlength="5"
-            minlength="1"
-            autofocus
-            :readonly="isMobileDevice"
-            :inputmode="isMobileDevice ? 'none' : undefined"
-            @focus="handleInputFocus"
-            @blur="handleInputBlur"
-            @click="handleInputClick"
-          />
-          <input
-            v-show="!isGuessingComplete"
-            class="button"
-            type="submit"
-            value="Enter"
-            @click="setCurrentGuess"
-            ref="submit"
-          />
-        </div>
-      </form>
-      <GameBoard
-        :current-winning-word="currentWinningWord"
-        :current-guess="currentGuess"
-        :used-words="usedWords"
-        :is-guessing-complete="isGuessingComplete"
-        :pending-guess="pendingGuess"
-        :shake-word-guess="shakeWordGuess"
-      />
+    <!-- Landscape mode warning for mobile -->
+    <div v-if="isMobileDevice && isMobileLandscape" class="landscape-warning">
+      <p class="landscape-message">This game works best in portrait mode</p>
     </div>
-    <transition name="modal">
-      <EndGameModal
-        v-if="isGuessingComplete"
-        :currentGuess="currentGuess"
-        :winStreak="winStreak"
-        :currentWinningWord="currentWinningWord"
-        :isCurrentGuessCorrect="isCurrentGuessCorrect"
-        :guesses-per-win="guessesPerWin"
-        :total-wins="totalWins"
-        @next-word="changeWordClearBoard()"
+
+    <!-- Game content (hidden in landscape on mobile) -->
+    <template v-else>
+      <Header />
+
+      <SessionStats 
+        :win-streak="winStreak"
+        :longest-streak="longestStreak"
+        :win-loss-percentage="winLossPercentage"
       />
-    </transition>
-    <Keyboard 
-      :guessed-letters="guessedLetters" 
-      @type-letter="typeLetter($event)"
-      @backspace="backspace"
-      @submit-guess="setCurrentGuess"
-    />
+      <div>
+        <form @submit.prevent autocomplete="off" class="guess-form">
+          <div class="letter-input-container">
+            <input
+              class="five-letter-input"
+              id="pending-guess"
+              v-model="pendingGuess"
+              maxlength="5"
+              minlength="1"
+              autofocus
+              :readonly="isMobileDevice"
+              :inputmode="isMobileDevice ? 'none' : undefined"
+              @focus="handleInputFocus"
+              @blur="handleInputBlur"
+              @click="handleInputClick"
+            />
+            <input
+              v-show="!isGuessingComplete"
+              class="button"
+              type="submit"
+              value="Enter"
+              @click="setCurrentGuess"
+              ref="submit"
+            />
+          </div>
+        </form>
+        <GameBoard
+          :current-winning-word="currentWinningWord"
+          :current-guess="currentGuess"
+          :used-words="usedWords"
+          :is-guessing-complete="isGuessingComplete"
+          :pending-guess="pendingGuess"
+          :shake-word-guess="shakeWordGuess"
+        />
+      </div>
+      <transition name="modal">
+        <EndGameModal
+          v-if="isGuessingComplete"
+          :currentGuess="currentGuess"
+          :winStreak="winStreak"
+          :currentWinningWord="currentWinningWord"
+          :isCurrentGuessCorrect="isCurrentGuessCorrect"
+          :guesses-per-win="guessesPerWin"
+          :total-wins="totalWins"
+          @next-word="changeWordClearBoard()"
+        />
+      </transition>
+      <Keyboard 
+        :guessed-letters="guessedLetters" 
+        @type-letter="typeLetter($event)"
+        @backspace="backspace"
+        @submit-guess="setCurrentGuess"
+      />
+    </template>
   </div>
 </template>
 
@@ -105,10 +113,39 @@ export default defineComponent({
     // Detect if device is mobile
     const isMobileDevice: Ref<boolean> = ref(false);
     
+    // Detect if mobile device is in landscape mode
+    const isMobileLandscape: Ref<boolean> = ref(false);
+    
     const detectMobileDevice = (): boolean => {
       if (typeof window === 'undefined') return false;
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-             (window.matchMedia && window.matchMedia('(max-width: 768px)').matches && 'ontouchstart' in window);
+      
+      // Check user agent first (most reliable)
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      // Also check for touch device with small screen (but be more strict)
+      const isSmallTouchScreen = window.matchMedia && 
+                                  window.matchMedia('(max-width: 768px)').matches && 
+                                  'ontouchstart' in window &&
+                                  window.innerWidth <= 768;
+      
+      return isMobileUA || isSmallTouchScreen;
+    }
+
+    const checkLandscapeMode = (): void => {
+      // Only check landscape mode if device is actually mobile
+      if (typeof window === 'undefined') {
+        isMobileLandscape.value = false;
+        return;
+      }
+      
+      // Re-check if device is mobile (in case it wasn't set yet)
+      const isMobile = detectMobileDevice();
+      
+      if (isMobile) {
+        isMobileLandscape.value = window.innerWidth > window.innerHeight;
+      } else {
+        isMobileLandscape.value = false;
+      }
     }
 
     const handleInputFocus = (event: Event) => {
@@ -389,6 +426,17 @@ export default defineComponent({
       // Detect mobile device
       isMobileDevice.value = detectMobileDevice();
       
+      // Check initial landscape mode
+      checkLandscapeMode();
+      
+      // Listen for orientation/resize changes
+      const handleOrientationChange = () => {
+        checkLandscapeMode();
+      };
+      
+      window.addEventListener('resize', handleOrientationChange);
+      window.addEventListener('orientationchange', handleOrientationChange);
+      
       const inputField = document.getElementById("pending-guess") as HTMLInputElement;
       const body = document.getElementsByTagName('body')[0];
 
@@ -523,6 +571,7 @@ export default defineComponent({
       handleInputBlur,
       handleInputClick,
       isMobileDevice,
+      isMobileLandscape,
     };
   },
 });
@@ -579,6 +628,24 @@ html {
   align-items: center;
   margin: 0;
   height: 100%;
+}
+
+.landscape-warning {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(62, 172, 62);
+}
+
+.landscape-message {
+  color: white;
+  font-family: "Bungee Hairline", sans-serif;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  text-align: center;
+  padding: 2rem;
+  margin: 0;
 }
 
 .letter-input {
